@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html dir="ltr">
+
+   
+   <link rel="stylesheet" href="http://js.arcgis.com/3.13/esri/css/esri.css">
+   
+   
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+   <title>Search Widget</title>
+   <link rel="stylesheet" href="http://js.arcgis.com/3.13/dijit/themes/claro/claro.css">
+   <link rel="stylesheet" href="http://js.arcgis.com/3.13/esri/css/esri.css">
+   <style>
+      html,
+      body,
+      #map {
+         height: 100%;
+         width: 100%;
+         margin: 0;
+         padding: 0;
+      }
+      #search {
+         display: block;
+         position: absolute;
+         z-index: 2;
+         top: 20px;
+         left: 74px;
+      }
+   </style>
+
+   </script>
+<script src="http://js.arcgis.com/3.13/"></script>
+   <script>
+      require([
+        "esri/map", "esri/config", "esri/dijit/Search", "esri/layers/FeatureLayer", "esri/InfoTemplate", "esri/SpatialReference", "esri/geometry/Extent", "dojo/domReady!"
+      ], function (Map, esriConfig, Search, FeatureLayer, InfoTemplate, SpatialReference, Extent) {
+         
+		 var map = new Map("map", {
+            basemap: "topo",
+            center: [10, 51], // lon, lat
+            zoom: 7
+         });
+         
+		 esriConfig.defaults.geometryService = "http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer";
+         
+		 var s = new Search({
+            enableButtonMode: false,
+            enableLabel: false,
+            enableInfoWindow: true,
+            showInfoWindowOnSelect: false,
+            map: map
+         }, "search");
+
+         var sources = s.get("sources");
+         
+         sources.push({
+            featureLayer: new FeatureLayer("http://services.arcgis.com/OLiydejKCZTGhvWg/arcgis/rest/services/Berlin_Gew%C3%A4sserundBauwerkanGew%C3%A4ssern/FeatureServer/1"),
+            searchFields: ["NAM"],
+            displayField: "NAM",
+            exactMatch: false,
+            name: "Gewässer",
+            outFields: ["*"],
+            placeholder: "Gewässer Name",
+            maxResults: 6,
+            maxSuggestions: 6,
+            infoTemplate: new InfoTemplate("Gewässer Information", "<b>Name</b>: ${NAM}<br><b>Typ</b>: ${OBJART_TXT}"),
+            enableSuggestions: true,
+            minCharacters: 1
+         });
+
+         s.set("sources", sources);
+         s.startup();
+
+      });
+   </script>
+</head>
+
+<body>
+   <div id="search"></div>
+   <div id="map"></div>
+</body>
+
+</html>
