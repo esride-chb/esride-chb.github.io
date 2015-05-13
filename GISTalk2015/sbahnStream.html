@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Integration StreamLayer</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+  <link rel="stylesheet" href="http://js.arcgis.com/3.13/dijit/themes/claro/claro.css">
+  <link rel="stylesheet" href="http://js.arcgis.com/3.13/esri/css/esri.css">
+  <style>
+    html, body, #mapDiv{
+      padding: 0;
+      margin: 0;
+      height: 100%;
+    }
+  </style>
+  
+  <script src="http://js.arcgis.com/3.13/"></script>
+  <script>
+    var map;
+    require(["esri/map",
+		"dojo/parser", 
+		"esri/InfoTemplate",
+		"esri/layers/StreamLayer", 
+		"esri/symbols/SimpleMarkerSymbol",
+		"esri/symbols/PictureMarkerSymbol",
+		"esri/symbols/SimpleLineSymbol",
+		"esri/renderers/SimpleRenderer",
+		"esri/renderers/UniqueValueRenderer",
+		"esri/renderers/TemporalRenderer",
+		"esri/dijit/BasemapToggle",
+		"dojo/_base/Color",
+		"dojo/on",
+		"dojo/domReady!"], 
+      function(Map, parser, InfoTemplate, StreamLayer, SimpleMarkerSymbol, PictureMarkerSymbol, SimpleLineSymbol, SimpleRenderer, UniqueValueRenderer, TemporalRenderer, BasemapToggle, Color, on) {
+
+        parser.parse();
+
+		 map = new Map("mapDiv", {
+			basemap: "gray",
+			center: [11.5, 48], // longitude, latitude
+			zoom: 10
+		});
+		
+		var toggle = new BasemapToggle({
+			map: map,
+			basemap: "satellite"
+		}, "BasemapToggle");
+		toggle.startup();
+		
+		createStreamLayer();
+		
+		function createStreamLayer() {
+			var streamLayer = new StreamLayer("http://localhost:6080/arcgis/rest/services/sBahnStream/StreamServer", {
+				purgeOptions: { displayCount: 10000 },
+				maximumTrackPoints: 5,
+				infoTemplate: new InfoTemplate("SBahn ${Name}", "<tr>Linie: <td>${Linie}</tr></td><br><tr>Nächster Halt:<td>${KommenderHalt_Name}</tr></td><br><tr>Letzter Halt:<td>${LetzterHalt_Name}</tr></td>")
+			});
+			streamLayer.on('connection-error', function(error) {
+				console.log('Fehler in StreamLayer Connection ');
+				console.log(error);
+			});
+			streamLayer.on('connect', function() {
+				console.log('StreamLayer Connected');
+			});
+			streamLayer.on('error', function(error) {
+				console.log('Fehler in StreamLayer');
+				console.log(error);
+			});
+			streamLayer.on('load', function(layer) {
+				console.log('StreamLayer loaded');
+			});
+			streamLayer.on('message', function(message) {
+				console.log('Message');
+			});
+			
+			streamLayer.setRenderer(createRenderer());
+			map.addLayer(streamLayer);
+		}
+		
+		function createRenderer() {
+			var defaultSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_SQUARE, 10, null, new dojo.Color([255, 255, 0]), 1);
+			var latestObsRenderer = new UniqueValueRenderer(defaultSymbol, "Linie");
+			latestObsRenderer.addValue("1", new PictureMarkerSymbol("icons/S1.png", 36, 16));
+			latestObsRenderer.addValue("2", new PictureMarkerSymbol("icons/S2.png", 36, 16));
+			latestObsRenderer.addValue("3", new PictureMarkerSymbol("icons/S3.png", 36, 16));
+			latestObsRenderer.addValue("4", new PictureMarkerSymbol("icons/S4.png", 36, 16));
+			latestObsRenderer.addValue("6", new PictureMarkerSymbol("icons/S6.png", 36, 16));
+			latestObsRenderer.addValue("7", new PictureMarkerSymbol("icons/S7.png", 36, 16));
+			latestObsRenderer.addValue("8", new PictureMarkerSymbol("icons/S8.png", 36, 16));
+			latestObsRenderer.addValue("20", new PictureMarkerSymbol("icons/S20.png", 36, 16));
+			latestObsRenderer.addValue("27", new PictureMarkerSymbol("icons/S27.png", 36, 16));
+			latestObsRenderer.addValue("(A)", new PictureMarkerSymbol("icons/A.png", 20, 20));
+			
+			var obsRenderer = new UniqueValueRenderer(defaultSymbol, "Linie");
+			obsRenderer.addValue("1", new PictureMarkerSymbol("icons/S1.png", 18, 8));
+			obsRenderer.addValue("2", new PictureMarkerSymbol("icons/S2.png", 18, 8));
+			obsRenderer.addValue("3", new PictureMarkerSymbol("icons/S3.png", 18, 8));
+			obsRenderer.addValue("4", new PictureMarkerSymbol("icons/S4.png", 18, 8));
+			obsRenderer.addValue("6", new PictureMarkerSymbol("icons/S6.png", 18, 8));
+			obsRenderer.addValue("7", new PictureMarkerSymbol("icons/S7.png", 18, 8));
+			obsRenderer.addValue("8", new PictureMarkerSymbol("icons/S8.png", 18, 8));
+			obsRenderer.addValue("20", new PictureMarkerSymbol("icons/S20.png", 18, 8));
+			obsRenderer.addValue("27", new PictureMarkerSymbol("icons/S27.png", 18, 8));
+			obsRenderer.addValue("(A)", new PictureMarkerSymbol("icons/A.png", 10, 10));
+			
+			var trackLineRenderer = new SimpleRenderer(
+				new SimpleLineSymbol("solid",
+				new Color( [250, 190, 70, 1] ), 2
+			));
+			var temporalRenderer = new TemporalRenderer(obsRenderer, latestObsRenderer, trackLineRenderer, null);
+			return temporalRenderer;
+		}
+	  
+      });
+  </script>
+
+</head>
+<body class="claro">
+  <div id="mapDiv">
+    <div style="position:absolute; right:20px; top:50px; z-Index:50;">
+      <div id="BasemapToggle"></div>
+    </div>
+  </div>
+</body>
+</html>
