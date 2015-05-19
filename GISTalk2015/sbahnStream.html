@@ -50,7 +50,7 @@
 		createStreamLayer();
 		
 		function createStreamLayer() {
-			var streamLayer = new StreamLayer("http://localhost:6080/arcgis/rest/services/sBahnStream/StreamServer", {
+			var streamLayer = new StreamLayer("http://service10.eggits.net/arcgis/rest/services/sBahnStream/StreamServer", {
 				purgeOptions: { displayCount: 10000 },
 				maximumTrackPoints: 5,
 				infoTemplate: new InfoTemplate("SBahn ${Name}", "<tr>Linie: <td>${Linie}</tr></td><br><tr>Nächster Halt:<td>${KommenderHalt_Name}</tr></td><br><tr>Letzter Halt:<td>${LetzterHalt_Name}</tr></td>")
