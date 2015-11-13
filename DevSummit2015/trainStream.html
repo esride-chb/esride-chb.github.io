@@ -118,30 +118,30 @@
 			var stationStreamLayer = null;
 			var stationRenderer = new SimpleRenderer(new PictureMarkerSymbol("http://static.arcgis.com/images/Symbols/Shapes/PurplePin1LargeB.png", 35, 35));
 			query("#AddStationButton").on("click", function(evt) {
-				if (evt.srcElement.childNodes[0].data === "Add Stations") {
+				if (evt.target.childNodes[0].data === "Add Stations") {
                     stationStreamLayer = new StreamLayer("http://service10.eggits.net/arcgis/rest/services/stationStream/StreamServer", {
                         purgeOptions: { displayCount: 10000 }
                     });
                     stationStreamLayer.setRenderer(stationRenderer);
                     map.addLayer(stationStreamLayer);
-                    evt.srcElement.childNodes[0].data = "Remove Stations";
+                    evt.target.childNodes[0].data = "Remove Stations";
                 } else {
                     map.removeLayer(stationStreamLayer);
-                    evt.srcElement.childNodes[0].data = "Add Stations";
+                    evt.target.childNodes[0].data = "Add Stations";
                 }
 			});
 
 			var stationBufferStreamLayer = null;
             query("#AddBufferButton").on("click", function(evt) {
-                if (evt.srcElement.childNodes[0].data === "Add Buffers") {
+                if (evt.target.childNodes[0].data === "Add Buffers") {
                     stationBufferStreamLayer = new StreamLayer("http://service10.eggits.net/arcgis/rest/services/stationBufferStream/StreamServer", {
                         purgeOptions: { displayCount: 10000 }
                     });
                     map.addLayer(stationBufferStreamLayer);
-                    evt.srcElement.childNodes[0].data = "Remove Buffers";
+                    evt.target.childNodes[0].data = "Remove Buffers";
                 } else {
                     map.removeLayer(stationBufferStreamLayer);
-                    evt.srcElement.childNodes[0].data = "Add Buffers";
+                    evt.target.childNodes[0].data = "Add Buffers";
                 }
             });
 		}
