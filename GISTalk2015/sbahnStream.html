@@ -4,8 +4,8 @@
   <title>Integration StreamLayer</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
-  <link rel="stylesheet" href="http://js.arcgis.com/3.13/dijit/themes/claro/claro.css">
-  <link rel="stylesheet" href="http://js.arcgis.com/3.13/esri/css/esri.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/3.13/dijit/themes/claro/claro.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/3.13/esri/css/esri.css">
   <style>
     html, body, #mapDiv{
       padding: 0;
@@ -50,7 +50,7 @@
 		createStreamLayer();
 		
 		function createStreamLayer() {
-			var streamLayer = new StreamLayer("http://service10.eggits.net/arcgis/rest/services/sBahnStream/StreamServer", {
+			var streamLayer = new StreamLayer("https://service10.eggits.net/arcgis/rest/services/sBahnStream/StreamServer", {
 				purgeOptions: { displayCount: 10000 },
 				maximumTrackPoints: 5,
 				infoTemplate: new InfoTemplate("SBahn ${Name}", "<tr>Linie: <td>${Linie}</tr></td><br><tr>Nächster Halt:<td>${KommenderHalt_Name}</tr></td><br><tr>Letzter Halt:<td>${LetzterHalt_Name}</tr></td>")
